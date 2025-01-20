@@ -1,28 +1,23 @@
+// src/app.ts
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import userRoutes from "./routes/user/user.routes";
+import colocationRoutes from "./routes/colocation.routes";
 import authRoutes from "./routes/authRoutes";
 
 const app = express();
 
-// Middlewares globaux
-app.use(express.json()); // Permet de lire le body en JSON
-app.use(cors());         // Active CORS pour les requêtes cross-origin
-// app.use(helmet());       // Sécurise les headers HTTP
-
-// Routes
+app.use(express.json());
+app.use(cors());
 app.get("/", (req, res) => {
   throw new Error("Il n'y a rien d'implémenté dans cette route, à vous de jouer !");
 });
 
 app.use("/auth", authRoutes);
-app.use("/api/users", userRoutes); // Routes pour les utilisateurs
+app.use("/colocations", colocationRoutes);
 
-// Middleware de gestion des erreurs (à vous de le personnaliser pour qu'il soit réutilisable, pensez aux classes d'erreurs)
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.log(err);
-  
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
     statusCode,

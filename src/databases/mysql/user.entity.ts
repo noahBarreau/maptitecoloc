@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { ColocationEntity } from "./colocation.entity";
+import { MemberEntity } from "./member.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -22,4 +24,10 @@ export class UserEntity {
 
   @Column()
   age: number;
+
+  @OneToMany(() => ColocationEntity, colocation => colocation.owner)
+  colocations: ColocationEntity[]; // Colocations créées par l'utilisateur
+
+  @OneToMany(() => MemberEntity, member => member.user)
+  memberships: MemberEntity[]; // Colocations où l'utilisateur est membre
 }
