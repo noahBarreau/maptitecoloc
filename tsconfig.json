@@ -9,6 +9,15 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["node_modules/*", "src/*"]
+    }
   },
+  "include": [
+      "src/**/*.ts",
+      "src/types/**/*.d.ts"
+    ]
+  
 }

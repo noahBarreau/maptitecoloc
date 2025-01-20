@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import userRoutes from "./routes/user/user.routes";
+import authRoutes from "./routes/authRoutes";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
   throw new Error("Il n'y a rien d'implémenté dans cette route, à vous de jouer !");
 });
 
+app.use("/auth", authRoutes);
 app.use("/api/users", userRoutes); // Routes pour les utilisateurs
 
 // Middleware de gestion des erreurs (à vous de le personnaliser pour qu'il soit réutilisable, pensez aux classes d'erreurs)
