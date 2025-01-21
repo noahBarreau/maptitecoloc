@@ -1,5 +1,5 @@
 // src/entities/member.entity.ts
-import { Entity, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from "typeorm";
 import { ColocationEntity } from "./colocation.entity";
 import { UserEntity } from "./user.entity";
 
@@ -13,4 +13,7 @@ export class MemberEntity {
 
   @ManyToOne(() => UserEntity, user => user.memberships)
   user: UserEntity;
+
+  @Column({ default: "Member" })
+  role: string;
 }

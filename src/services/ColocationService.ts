@@ -9,10 +9,11 @@ export class ColocationService {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
 
-      const colocations = await colocationRepository
-        .createQueryBuilder("colocation")
-        .where("colocation.ownerId = :userId", { userId })
-        .getMany();
+      const colocations = await colocationRepository.find({
+        where: { 
+          owner: { id: userId } 
+        }
+      });
 
       return {
         data: colocations
@@ -60,6 +61,7 @@ export class ColocationService {
       const member = new MemberEntity();
       member.colocation = newColocation;
       member.user = user;
+      member.role = "Owner";
 
       await memberRepository.save(member);
 
@@ -80,11 +82,12 @@ export class ColocationService {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
 
-      const colocation = await colocationRepository
-        .createQueryBuilder("colocation")
-        .leftJoinAndSelect("colocation.members", "members")
-        .where("colocation.id = :id", { id: colocationId })
-        .getOne();
+      const colocation = await colocationRepository.findOne({
+        where: { 
+          id: colocationId
+        },
+        relations: ["members", "members.user", "owner"],
+      });
 
       if (!colocation) {
         throw {
@@ -111,7 +114,11 @@ export class ColocationService {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
 
-      const colocation = await colocationRepository.findOne({ where: { id: colocationId } });
+      const colocation = await colocationRepository.findOne({ 
+        where: { 
+          id: colocationId 
+        } 
+      });
       
       if (!colocation) {
         throw {
