@@ -11,7 +11,7 @@ export class ColocationController {
       // Vérification et gestion des erreurs normalisées
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,
@@ -36,7 +36,7 @@ export class ColocationController {
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,
@@ -58,7 +58,7 @@ export class ColocationController {
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,
@@ -80,7 +80,7 @@ export class ColocationController {
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,

@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import colocationRoutes from "./routes/colocation.routes";
-import authRoutes from "./routes/authRoutes";
+import authRoutes from "./routes/auth.routes";
 import memberRoutes from "./routes/member.routes";
 
 const app = express();

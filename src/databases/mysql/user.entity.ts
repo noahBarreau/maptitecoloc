@@ -7,16 +7,16 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 50 })
+  @Column({ length: 50 , nullable: false })
   firstname: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 50 , nullable: false })
   lastname: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true , nullable: false })
   email: string;
 
-  @Column()
+  @Column({nullable: false })
   password_hash: string;
 
   @Column({ default: true })

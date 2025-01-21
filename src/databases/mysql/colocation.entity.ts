@@ -8,13 +8,13 @@ export class ColocationEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   location: string;
 
-  @Column('float')
+  @Column('float', { nullable: false })
   area: number;
 
-  @Column()
+  @Column({ nullable: false })
   numberOfRooms: number;
 
   @Column()

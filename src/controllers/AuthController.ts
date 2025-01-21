@@ -16,7 +16,7 @@ export class AuthController {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         // Cast de l'erreur en un type connu
         const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,
@@ -42,7 +42,7 @@ export class AuthController {
       // Vérification de l'erreur
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,
@@ -62,23 +62,26 @@ export class AuthController {
     try {
       const authHeader = req.headers["authorization"];
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(400).json({
+        res.status(400).json({
           statusCode: 400,
           errorCode: "ERR_REFRESH_TOKEN_REQUIRED",
           errMessage: "Refresh token is required in the Authorization header.",
         });
       }
 
-      const refreshToken = authHeader.split(" ")[1];
-      const newToken = await authService.refreshToken(refreshToken);
-      res.status(200).json({
-        data: { token: newToken },
-      });
+      if(authHeader!=undefined){
+        const refreshToken = authHeader.split(" ")[1];
+        const newToken = await authService.refreshToken(refreshToken);
+        res.status(200).json({
+          data: { token: newToken },
+        });
+      }
+
     } catch (error: unknown) {
       // Vérification de l'erreur
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,
@@ -102,7 +105,7 @@ export class AuthController {
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,
@@ -126,7 +129,7 @@ export class AuthController {
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
-        return res.status(customError.statusCode).json({
+        res.status(customError.statusCode).json({
           statusCode: customError.statusCode,
           errorCode: customError.errorCode,
           errMessage: customError.errMessage,
