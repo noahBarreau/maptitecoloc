@@ -4,6 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import colocationRoutes from "./routes/colocation.routes";
 import authRoutes from "./routes/authRoutes";
+import memberRoutes from "./routes/member.routes";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/colocations", colocationRoutes);
+app.use("/members", memberRoutes);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.log(err);
