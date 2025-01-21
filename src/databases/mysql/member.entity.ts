@@ -14,6 +14,6 @@ export class MemberEntity {
   @ManyToOne(() => UserEntity, user => user.memberships)
   user: UserEntity;
 
-  @Column({ default: "member" })
+  @Column({ default: "Member" })
   role: string;
 }

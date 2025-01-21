@@ -9,14 +9,14 @@ export class ColocationService {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
 
-      const colocations = await colocationRepository
-        .createQueryBuilder("colocation")
-        .where("colocation.ownerId = :userId", { userId })
-        .getMany();
+      const colocations = await colocationRepository.find({
+        where: { 
+          owner: { id: userId } 
+        }
+      });
 
       return colocations;
     } catch (error) {
-      console.error("Error fetching colocations:", error);
       throw new Error("An error occurred while fetching colocations.");
     }
   }
@@ -50,12 +50,12 @@ export class ColocationService {
       const member = new MemberEntity();
       member.colocation = newColocation;
       member.user = user;
+      member.role = "Owner";
 
       await memberRepository.save(member);
 
       return newColocation;
     } catch (error) {
-      console.error("Error creating colocation:", error);
       throw new Error("An error occurred while creating the colocation.");
     }
   }
@@ -64,11 +64,12 @@ export class ColocationService {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
 
-      const colocation = await colocationRepository
-        .createQueryBuilder("colocation")
-        .leftJoinAndSelect("colocation.members", "members")
-        .where("colocation.id = :id", { id: colocationId })
-        .getOne();
+      const colocation = await colocationRepository.findOne({
+        where: { 
+          id: colocationId
+        },
+        relations: ["members", "members.user", "owner"],
+      });
 
       if (!colocation) {
         throw new Error("Colocation not found");
@@ -76,7 +77,6 @@ export class ColocationService {
 
       return colocation;
     } catch (error) {
-      console.error("Error fetching colocation details:", error);
       throw new Error("An error occurred while fetching colocation details.");
     }
   }
@@ -85,7 +85,11 @@ export class ColocationService {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
 
-      const colocation = await colocationRepository.findOne({ where: { id: colocationId } });
+      const colocation = await colocationRepository.findOne({ 
+        where: { 
+          id: colocationId 
+        } 
+      });
       
       if (!colocation) {
         throw new Error("Colocation not found");
@@ -96,7 +100,6 @@ export class ColocationService {
 
       return { message: "Colocation deleted (marked as inactive)" };
     } catch (error) {
-      console.error("Error deleting colocation:", error);
       throw new Error("An error occurred while deleting colocation.");
     }
   }
