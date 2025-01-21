@@ -11,7 +11,6 @@ export class UserPresenter {
   @IsString()
   firstname: UserEntity['firstname'];
 
-  // à vous de jouer
   lastname: string;
   email: string;
   isActive: boolean;

@@ -1,20 +1,18 @@
 import { connectMySQLDB } from "../configs/databases/mysql.config";
 import { ColocationEntity } from "../databases/mysql/colocation.entity";
 import { UserEntity } from "../databases/mysql/user.entity";
-import { MemberEntity } from "../databases/mysql/member.entity";  // Assurez-vous d'importer MemberEntity si nécessaire
+import { MemberEntity } from "../databases/mysql/member.entity";
 
 export class ColocationService {
   
-  // Méthode pour lister les colocations d'un utilisateur par son ID
   static async listUserColocations(userId: number) {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
 
-      // Requête pour récupérer toutes les colocations associées à l'utilisateur
       const colocations = await colocationRepository
         .createQueryBuilder("colocation")
-        .where("colocation.ownerId = :userId", { userId })  // Vérifier que `ownerId` est bien un champ dans la table
-        .getMany();  // Récupère toutes les colocations de l'utilisateur
+        .where("colocation.ownerId = :userId", { userId })
+        .getMany();
 
       return colocations;
     } catch (error) {
@@ -23,7 +21,6 @@ export class ColocationService {
     }
   }
 
-  // Méthode pour créer une nouvelle colocation
   static async createColocation(
     userId: number,
     location: string,
@@ -36,28 +33,25 @@ export class ColocationService {
       const memberRepository = connectMySQLDB.getRepository(MemberEntity);
       const userRepository = connectMySQLDB.getRepository(UserEntity);
 
-      // Récupérer l'utilisateur (propriétaire de la colocation)
       const user = await userRepository.findOneBy({ id: userId });
       if (!user) {
         throw new Error("User not found");
       }
 
-      // Créer une nouvelle colocation
       const colocation = new ColocationEntity();
       colocation.location = location;
       colocation.area = area;
       colocation.numberOfRooms = numberOfRooms;
       colocation.ownerOrAgency = ownerOrAgency;
-      colocation.owner = user;  // Associer l'utilisateur comme propriétaire
+      colocation.owner = user;
 
       const newColocation = await colocationRepository.save(colocation);
 
-      // Lier l'utilisateur à cette nouvelle colocation (en tant que membre)
       const member = new MemberEntity();
-      member.colocation = newColocation;  // Associer la colocation
-      member.user = user;  // Associer l'utilisateur comme membre
+      member.colocation = newColocation;
+      member.user = user;
 
-      await memberRepository.save(member);  // Sauvegarder le membre
+      await memberRepository.save(member);
 
       return newColocation;
     } catch (error) {
@@ -66,16 +60,15 @@ export class ColocationService {
     }
   }
 
-  // Méthode pour récupérer les détails d'une colocation (avec ses membres)
   static async getColocationDetails(colocationId: number) {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
 
       const colocation = await colocationRepository
         .createQueryBuilder("colocation")
-        .leftJoinAndSelect("colocation.members", "members")  // Associe les membres à la colocation
+        .leftJoinAndSelect("colocation.members", "members")
         .where("colocation.id = :id", { id: colocationId })
-        .getOne();  // Récupère la colocation avec ses membres
+        .getOne();
 
       if (!colocation) {
         throw new Error("Colocation not found");
@@ -88,7 +81,6 @@ export class ColocationService {
     }
   }
 
-  // Méthode pour supprimer une colocation (ne pas la supprimer physiquement, mais la marquer comme inactive)
   static async deleteColocation(colocationId: number) {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
@@ -99,9 +91,8 @@ export class ColocationService {
         throw new Error("Colocation not found");
       }
 
-      // Marquer la colocation comme inactive au lieu de la supprimer physiquement
-      colocation.ownerOrAgency = "inactive";  // Vous pouvez utiliser un autre champ pour le statut
-      await colocationRepository.save(colocation); // Sauvegarder la modification
+      colocation.ownerOrAgency = "inactive";
+      await colocationRepository.save(colocation);
 
       return { message: "Colocation deleted (marked as inactive)" };
     } catch (error) {

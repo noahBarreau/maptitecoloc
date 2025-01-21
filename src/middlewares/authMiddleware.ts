@@ -6,18 +6,18 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
 
   if (!token || typeof token !== "string") {
     res.status(401).json({ error: "Accès non autorisé." });
-    return; // Cette ligne arrête l'exécution du code après l'envoi de la réponse
+    return;
   }
 
   const jwtSecret = process.env.JWT_SECRET;
 
   if (!jwtSecret) {
     res.status(500).json({ error: "JWT secret is not defined in environment variables." });
-    return; // Cette ligne arrête l'exécution du code après l'envoi de la réponse
+    return;
   }
 
   try {
-    const payload = jwt.verify(token, jwtSecret); // Le secret est maintenant de type string
+    const payload = jwt.verify(token, jwtSecret);
     (req as any).user = payload;
     next();
   } catch (error) {

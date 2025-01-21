@@ -9,6 +9,6 @@ export const connectMySQLDB = new DataSource({
   database: process.env.DB_NAME || "maptitecoloc",
   synchronize: true, // Attention : activez uniquement en développement
   logging: false,
-  entities: ["src/databases/mysql/*.ts"], // Entités de votre projet
-  migrations: ["src/migrations/**/*.ts"], // Scripts de migration
+  entities: ["src/databases/mysql/*.ts"],
+  migrations: ["src/migrations/**/*.ts"],
 });

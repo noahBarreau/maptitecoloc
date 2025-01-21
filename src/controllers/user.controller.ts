@@ -18,10 +18,9 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
    }
     
     const user = await userService.registerUser(req.body);
-    // appeler le logger service pour enregistrer QUI a créer un utilisateur (peut être un admin ou l'utilisateur lui même (?)  )
 
     const createdUser = plainToInstance(UserPresenter, user, { excludeExtraneousValues: true });
-    res.status(201).json(createdUser); // à vous de créer une class pour gérer les success
+    res.status(201).json(createdUser);
   } catch (error) {
     throw error;
   }

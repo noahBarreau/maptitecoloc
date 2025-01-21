@@ -1,7 +1,7 @@
 // src/entities/colocation.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
-import { UserEntity } from "./user.entity";  // Pour lier avec l'utilisateur (propriétaire)
-import { MemberEntity } from "./member.entity"; // Lien avec les membres de la colocation
+import { UserEntity } from "./user.entity";
+import { MemberEntity } from "./member.entity";
 
 @Entity("colocations")
 export class ColocationEntity {
@@ -9,20 +9,20 @@ export class ColocationEntity {
   id: number;
 
   @Column()
-  location: string; // Lieu de la colocation
+  location: string;
 
   @Column('float')
-  area: number; // Surface en m²
+  area: number;
 
   @Column()
-  numberOfRooms: number; // Nombre de chambres
+  numberOfRooms: number;
 
   @Column()
-  ownerOrAgency: string; // Propriétaire ou agence (pouvant être un nom ou une agence)
+  ownerOrAgency: string;
 
   @ManyToOne(() => UserEntity, user => user.colocations)
-  owner: UserEntity; // L'utilisateur propriétaire de la colocation
+  owner: UserEntity;
 
   @OneToMany(() => MemberEntity, member => member.colocation)
-  members: MemberEntity[]; // Membres de la colocation
+  members: MemberEntity[];
 }

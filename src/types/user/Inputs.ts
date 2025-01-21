@@ -7,7 +7,6 @@ export class userToCreateInput {
   @IsString()
   firstname: UserEntity['firstname'];
 
-  // à vous de jouer
   lastname: string;
   email: string;
 

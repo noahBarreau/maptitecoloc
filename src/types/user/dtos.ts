@@ -7,9 +7,7 @@ export class UserToCreateDTO {
   @IsString()
   firstname: UserEntity['firstname'];
 
-  // à vous de jouer
   lastname: string;
   email: string;
   password: string;
-  // ....
 }

@@ -36,19 +36,23 @@ export class AuthController {
 
   static async refresh(req: Request, res: Response) {
     try {
-      const { refreshToken } = req.body;
+      const authHeader = req.headers["authorization"];
   
-      if (!refreshToken) {
-        res.status(400).json({ error: "Refresh token is required." });
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        res.status(400).json({ error: "Refresh token is required in the Authorization header." });
       }
-  
-      const newToken = await authService.refreshToken(refreshToken);
-  
-      if (!newToken) {
-        res.status(400).json({ error: "Invalid refresh token." });
+      if (authHeader != undefined) {
+        const refreshToken = authHeader.split(" ")[1];
+    
+        const newToken = await authService.refreshToken(refreshToken);
+    
+        if (!newToken) {
+          res.status(400).json({ error: "Invalid refresh token." });
+        }
+    
+        res.status(200).json({ token: newToken });
       }
-  
-      res.status(200).json({ token: newToken });
+
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ error: error.message });
@@ -57,6 +61,7 @@ export class AuthController {
       }
     }
   }
+  
   
   static async getMe(req: Request, res: Response) {
     try {

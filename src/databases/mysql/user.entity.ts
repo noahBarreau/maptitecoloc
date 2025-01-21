@@ -26,8 +26,8 @@ export class UserEntity {
   age: number;
 
   @OneToMany(() => ColocationEntity, colocation => colocation.owner)
-  colocations: ColocationEntity[]; // Colocations créées par l'utilisateur
+  colocations: ColocationEntity[];
 
   @OneToMany(() => MemberEntity, member => member.user)
-  memberships: MemberEntity[]; // Colocations où l'utilisateur est membre
+  memberships: MemberEntity[];
 }

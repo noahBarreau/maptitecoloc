@@ -1,15 +1,15 @@
 // src/controllers/ColocationController.ts
 import { Request, Response } from "express";
-import { ColocationService } from "../services/ColocationService";  // Assurez-vous de créer un service pour la logique
+import { ColocationService } from "../services/ColocationService"; 
 
 export class ColocationController {
   static async listUserColocations(req: Request, res: Response) {
     try {
-      const userId = parseInt(req.params.userId, 10); // Récupérer l'ID utilisateur depuis les paramètres de l'URL
+      const userId = parseInt(req.params.userId, 10);
       const colocations = await ColocationService.listUserColocations(userId);
       res.status(200).json(colocations);
     } catch (error) {
-      console.error(error);  // Log l'erreur pour débogage
+      console.error(error);
       res.status(500).json({ error: "An error occurred while fetching colocations." });
     }
   }
@@ -17,7 +17,7 @@ export class ColocationController {
   static async createColocation(req: Request, res: Response) {
     try {
       const { location, area, numberOfRooms, ownerOrAgency } = req.body;
-      const userId = (req as any).user.id;  // Récupérer l'ID de l'utilisateur authentifié
+      const userId = (req as any).user.id;
 
       const newColocation = await ColocationService.createColocation(userId, location, area, numberOfRooms, ownerOrAgency);
       res.status(201).json(newColocation);
