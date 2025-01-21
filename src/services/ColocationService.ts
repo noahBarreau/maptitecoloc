@@ -14,10 +14,16 @@ export class ColocationService {
         .where("colocation.ownerId = :userId", { userId })
         .getMany();
 
-      return colocations;
+      return {
+        data: colocations
+      };
     } catch (error) {
       console.error("Error fetching colocations:", error);
-      throw new Error("An error occurred while fetching colocations.");
+      throw {
+        statusCode: 500,
+        errorCode: "ERR_FETCHING_COLOCATIONS",
+        errMessage: "An error occurred while fetching colocations.",
+      };
     }
   }
 
@@ -35,7 +41,11 @@ export class ColocationService {
 
       const user = await userRepository.findOneBy({ id: userId });
       if (!user) {
-        throw new Error("User not found");
+        throw {
+          statusCode: 404,
+          errorCode: "ERR_USER_NOT_FOUND",
+          errMessage: "User not found",
+        };
       }
 
       const colocation = new ColocationEntity();
@@ -53,10 +63,16 @@ export class ColocationService {
 
       await memberRepository.save(member);
 
-      return newColocation;
+      return {
+        data: newColocation
+      };
     } catch (error) {
       console.error("Error creating colocation:", error);
-      throw new Error("An error occurred while creating the colocation.");
+      throw {
+        statusCode: 500,
+        errorCode: "ERR_CREATING_COLOCATION",
+        errMessage: "An error occurred while creating the colocation.",
+      };
     }
   }
 
@@ -71,13 +87,23 @@ export class ColocationService {
         .getOne();
 
       if (!colocation) {
-        throw new Error("Colocation not found");
+        throw {
+          statusCode: 404,
+          errorCode: "ERR_COLOCATION_NOT_FOUND",
+          errMessage: "Colocation not found",
+        };
       }
 
-      return colocation;
+      return {
+        data: colocation
+      };
     } catch (error) {
       console.error("Error fetching colocation details:", error);
-      throw new Error("An error occurred while fetching colocation details.");
+      throw {
+        statusCode: 500,
+        errorCode: "ERR_FETCHING_COLOCATION_DETAILS",
+        errMessage: "An error occurred while fetching colocation details.",
+      };
     }
   }
 
@@ -88,16 +114,26 @@ export class ColocationService {
       const colocation = await colocationRepository.findOne({ where: { id: colocationId } });
       
       if (!colocation) {
-        throw new Error("Colocation not found");
+        throw {
+          statusCode: 404,
+          errorCode: "ERR_COLOCATION_NOT_FOUND",
+          errMessage: "Colocation not found",
+        };
       }
 
       colocation.ownerOrAgency = "inactive";
       await colocationRepository.save(colocation);
 
-      return { message: "Colocation deleted (marked as inactive)" };
+      return {
+        data: { message: "Colocation deleted (marked as inactive)" }
+      };
     } catch (error) {
       console.error("Error deleting colocation:", error);
-      throw new Error("An error occurred while deleting colocation.");
+      throw {
+        statusCode: 500,
+        errorCode: "ERR_DELETING_COLOCATION",
+        errMessage: "An error occurred while deleting colocation.",
+      };
     }
   }
 }

@@ -11,12 +11,25 @@ export class AuthController {
     try {
       const user = await authService.register(req.body);
       res.status(201).json(user);
-    } catch (error) {
-        if (error instanceof Error) {
-          res.status(400).json({ error: error.message });
-        } else {
-          res.status(400).json({ error: "An unknown error occurred." });
-        }
+    } catch (error: unknown) {
+      // Vérification si l'erreur a la structure attendue
+      if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
+        // Cast de l'erreur en un type connu
+        const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
+        return res.status(customError.statusCode).json({
+          statusCode: customError.statusCode,
+          errorCode: customError.errorCode,
+          errMessage: customError.errMessage,
+          form: customError.form,
+          errorFields: customError.errorFields,
+        });
+      }
+      // Erreur générique si l'erreur ne correspond pas à la structure attendue
+      res.status(400).json({
+        statusCode: 400,
+        errorCode: "ERR_UNKNOWN",
+        errMessage: "An unknown error occurred.",
+      });
     }
   }
 
@@ -25,55 +38,83 @@ export class AuthController {
       const { email, password } = req.body;
       const tokens = await authService.login(email, password);
       res.status(200).json(tokens);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-          } else {
-            res.status(400).json({ error: "An unknown error occurred." });
-          }
+    } catch (error: unknown) {
+      // Vérification de l'erreur
+      if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
+        const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
+        return res.status(customError.statusCode).json({
+          statusCode: customError.statusCode,
+          errorCode: customError.errorCode,
+          errMessage: customError.errMessage,
+          form: customError.form,
+          errorFields: customError.errorFields,
+        });
+      }
+      res.status(400).json({
+        statusCode: 400,
+        errorCode: "ERR_INVALID_CREDENTIALS",
+        errMessage: "Email ou mot de passe incorrect.",
+      });
     }
   }
 
   static async refresh(req: Request, res: Response) {
     try {
       const authHeader = req.headers["authorization"];
-  
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        res.status(400).json({ error: "Refresh token is required in the Authorization header." });
-      }
-      if (authHeader != undefined) {
-        const refreshToken = authHeader.split(" ")[1];
-    
-        const newToken = await authService.refreshToken(refreshToken);
-    
-        if (!newToken) {
-          res.status(400).json({ error: "Invalid refresh token." });
-        }
-    
-        res.status(200).json({ token: newToken });
+        return res.status(400).json({
+          statusCode: 400,
+          errorCode: "ERR_REFRESH_TOKEN_REQUIRED",
+          errMessage: "Refresh token is required in the Authorization header.",
+        });
       }
 
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(400).json({ error: "An unknown error occurred." });
+      const refreshToken = authHeader.split(" ")[1];
+      const newToken = await authService.refreshToken(refreshToken);
+      res.status(200).json({
+        data: { token: newToken },
+      });
+    } catch (error: unknown) {
+      // Vérification de l'erreur
+      if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
+        const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
+        return res.status(customError.statusCode).json({
+          statusCode: customError.statusCode,
+          errorCode: customError.errorCode,
+          errMessage: customError.errMessage,
+          form: customError.form,
+          errorFields: customError.errorFields,
+        });
       }
+      res.status(400).json({
+        statusCode: 400,
+        errorCode: "ERR_INVALID_REFRESH_TOKEN",
+        errMessage: "Token invalide ou expiré.",
+      });
     }
   }
-  
-  
+
   static async getMe(req: Request, res: Response) {
     try {
       const userId = (req as any).user.id;
       const user = await authService.getMe(userId);
       res.status(200).json(user);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-          } else {
-            res.status(400).json({ error: "An unknown error occurred." });
-          }
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
+        const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
+        return res.status(customError.statusCode).json({
+          statusCode: customError.statusCode,
+          errorCode: customError.errorCode,
+          errMessage: customError.errMessage,
+          form: customError.form,
+          errorFields: customError.errorFields,
+        });
+      }
+      res.status(400).json({
+        statusCode: 400,
+        errorCode: "ERR_USER_NOT_FOUND",
+        errMessage: "Utilisateur non trouvé.",
+      });
     }
   }
 
@@ -82,12 +123,22 @@ export class AuthController {
       const userId = parseInt(req.params.id, 10);
       const response = await authService.deleteUser(userId);
       res.status(200).json(response);
-    } catch (error) {
-        if (error instanceof Error) {
-            res.status(400).json({ error: error.message });
-          } else {
-            res.status(400).json({ error: "An unknown error occurred." });
-          }
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
+        const customError = error as { statusCode: number, errorCode: string, errMessage: string, form?: string, errorFields?: Array<{ field: string, message: string }> };
+        return res.status(customError.statusCode).json({
+          statusCode: customError.statusCode,
+          errorCode: customError.errorCode,
+          errMessage: customError.errMessage,
+          form: customError.form,
+          errorFields: customError.errorFields,
+        });
+      }
+      res.status(400).json({
+        statusCode: 400,
+        errorCode: "ERR_USER_NOT_FOUND",
+        errMessage: "Utilisateur non trouvé.",
+      });
     }
   }
 }
