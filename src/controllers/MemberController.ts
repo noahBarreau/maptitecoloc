@@ -52,7 +52,8 @@ export class MemberController {
       static async viewMemberProfile(req: Request, res: Response) {
         try {
           const memberId = parseInt(req.params.id, 10);
-          const profile = await MemberService.viewMemberProfile(memberId);
+          const { colocationId } = req.body;
+          const profile = await MemberService.viewMemberProfile(memberId, colocationId);
           res.status(200).json(profile);
         } catch (error) {
           if (error instanceof Error) {

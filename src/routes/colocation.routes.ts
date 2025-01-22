@@ -5,9 +5,9 @@ import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.get("/user/:userId", authMiddleware, ColocationController.listUserColocations);
+router.get("/user/:userId",  ColocationController.listUserColocations);
 router.post("/create", authMiddleware, ColocationController.createColocation);
-router.get("/:id", authMiddleware, ColocationController.getColocationDetails);
-router.delete("/:id", authMiddleware, ColocationController.deleteColocation);
+router.get("/:id", ColocationController.getColocationDetails);
+router.delete("/delete/:id", authMiddleware, ColocationController.deleteColocation);
 
 export default router;

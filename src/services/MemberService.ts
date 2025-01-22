@@ -3,6 +3,7 @@ import { connectMySQLDB } from "../configs/databases/mysql.config";
 import { MemberEntity } from "../databases/mysql/member.entity";
 import { ColocationEntity } from "../databases/mysql/colocation.entity";
 import { UserEntity } from "../databases/mysql/user.entity";
+import { Console } from "console";
 
 export class MemberService {
   static async addMember(colocationId: number, userId: number, ownerId: number) {
@@ -79,17 +80,35 @@ export class MemberService {
     if (!newOwner) throw new Error("New owner must be a member of the colocation.");
     if(currentOwner!=undefined){
 
-      const currentMember = await memberRepository.findOne({
+      const OwnerToMember = await memberRepository.findOne({
         where: {
-          user: { id: newOwner.id } ,
+          user: { id: currentOwner.id } ,
           colocation: { id: colocation.id },
+          role: "Owner"
         },
         relations: ["user", "colocation"],
       });
-      if(currentMember!=undefined){
+
+      const MemberToOwner = await memberRepository.findOne({
+        where: {
+          user: { id: newOwner.id } ,
+          colocation: { id: colocation.id },
+          role: "Member"
+        },
+        relations: ["user", "colocation"],
+      });
+      console.log(OwnerToMember);
+      console.log(MemberToOwner);
+      console.log(OwnerToMember!=undefined);
+      console.log(MemberToOwner!=undefined);
+      console.log(OwnerToMember!=undefined && MemberToOwner!=undefined);
+
+      if(OwnerToMember!=undefined && MemberToOwner!=undefined){
         colocation.owner = newOwner;
-        currentMember.user=currentOwner;
-        await memberRepository.save(currentMember);
+        OwnerToMember.role="Member";
+        MemberToOwner.role="Owner";
+        await memberRepository.save(OwnerToMember);
+        await memberRepository.save(MemberToOwner);
         await colocationRepository.save(colocation);
         return { message: "Colocation ownership transferred successfully." };
       }
@@ -97,15 +116,18 @@ export class MemberService {
   }
 
 
-  static async viewMemberProfile(memberId: number) {
+  static async viewMemberProfile(memberId: number, colocationId: number) {
     const memberRepository = connectMySQLDB.getRepository(MemberEntity);
 
     const member = await memberRepository.findOne({
-      where: { id: memberId },
+      where: { 
+        user : {id: memberId},
+        colocation: {id : colocationId}
+      },
       relations: ["user", "colocation"],
     });
-
-    if (!member) throw new Error("Member not found.");
-    return member;
+    console.log(member);
+    if (!member) throw new Error("Membre inexistant ou n'appartenant pas a cette location");
+    return member.user;
   }
 }

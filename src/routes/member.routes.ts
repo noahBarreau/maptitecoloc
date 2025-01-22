@@ -8,6 +8,6 @@ const router = Router();
 router.post("/add", authMiddleware, MemberController.addMember);
 router.post("/remove", authMiddleware, MemberController.removeMember);
 router.post("/transfer", authMiddleware, MemberController.transferColocation);
-router.get("/profile/:id", authMiddleware, MemberController.viewMemberProfile);
+router.get("/profile/:id", MemberController.viewMemberProfile);
 
 export default router;

@@ -8,7 +8,6 @@ export class ColocationController {
       const colocations = await ColocationService.listUserColocations(userId);
       res.status(200).json(colocations);
     } catch (error: unknown) {
-      // Vérification et gestion des erreurs normalisées
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
         const customError = error as { statusCode: number, errorCode: string, errMessage: string };
         res.status(customError.statusCode).json({
@@ -17,7 +16,6 @@ export class ColocationController {
           errMessage: customError.errMessage,
         });
       }
-      // Erreur générique
       res.status(500).json({
         statusCode: 500,
         errorCode: "ERR_UNKNOWN",
