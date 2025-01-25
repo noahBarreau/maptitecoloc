@@ -2,6 +2,11 @@ import { connectMySQLDB } from "../configs/databases/mysql.config";
 import { ColocationEntity } from "../databases/mysql/colocation.entity";
 import { UserEntity } from "../databases/mysql/user.entity";
 import { MemberEntity } from "../databases/mysql/member.entity";
+import { HistoricEntity } from "../databases/mysql/historic.entity";
+import { HistoricService } from "./HistoricService";
+
+const historicRepository = connectMySQLDB.getRepository(HistoricEntity);
+const historicService = new HistoricService(historicRepository);
 
 export class ColocationService {
   
@@ -28,13 +33,7 @@ export class ColocationService {
     }
   }
 
-  static async createColocation(
-    userId: number,
-    location: string,
-    area: number,
-    numberOfRooms: number,
-    ownerOrAgency: string
-  ) {
+  static async createColocation(userId: number,location: string,area: number,numberOfRooms: number,ownerOrAgency: string, req : any) {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
       const memberRepository = connectMySQLDB.getRepository(MemberEntity);
@@ -57,6 +56,13 @@ export class ColocationService {
       colocation.owner = user;
 
       const newColocation = await colocationRepository.save(colocation);
+
+      const userLog = await userRepository.findOneBy({ id: req.user.id });
+      const method= Object.keys(req.route.methods)[0];
+      
+      if(method && userLog){
+        const Log = await HistoricService.createLog(method, req.originalUrl, "createColocation", userLog, "( "+userLog.id+" ) "+userLog.email+" a récupé la colocation ( "+newColocation.id+" ) "+newColocation.location, true);
+      }
 
       const member = new MemberEntity();
       member.colocation = newColocation;
@@ -110,9 +116,10 @@ export class ColocationService {
     }
   }
 
-  static async deleteColocation(colocationId: number) {
+  static async deleteColocation(colocationId: number, req : any) {
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
+      const userRepository = connectMySQLDB.getRepository(UserEntity);
 
       const colocation = await colocationRepository.findOne({ 
         where: { 
@@ -126,6 +133,13 @@ export class ColocationService {
           errorCode: "ERR_COLOCATION_NOT_FOUND",
           errMessage: "Colocation not found",
         };
+      }
+
+      const userLog = await userRepository.findOneBy({ id: req.user.id });
+      const method= Object.keys(req.route.methods)[0];
+      
+      if(method && userLog){
+        const Log = await HistoricService.createLog(method, req.originalUrl, "deleteColocation", userLog, "( "+userLog.id+" ) "+userLog.email+" a supprimé la colocation ( "+colocation.id+" ) "+colocation.location, true);
       }
 
       colocation.ownerOrAgency = "inactive";

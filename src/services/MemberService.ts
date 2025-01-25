@@ -2,12 +2,18 @@ import { connectMySQLDB } from "../configs/databases/mysql.config";
 import { MemberEntity } from "../databases/mysql/member.entity";
 import { ColocationEntity } from "../databases/mysql/colocation.entity";
 import { UserEntity } from "../databases/mysql/user.entity";
+import { HistoricEntity } from "../databases/mysql/historic.entity";
+import { HistoricService } from "./HistoricService";
+
+const historicRepository = connectMySQLDB.getRepository(HistoricEntity);
+const historicService = new HistoricService(historicRepository);
 
 export class MemberService {
-  static async addMember(colocationId: number, userId: number, ownerId: number) {
+  static async addMember(colocationId: number, userId: number, ownerId: number, req :any) {
     try {
       const memberRepository = connectMySQLDB.getRepository(MemberEntity);
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
+      const userRepository = connectMySQLDB.getRepository(UserEntity);
 
       const colocation = await colocationRepository.findOne({
         where: { id: colocationId },
@@ -35,6 +41,15 @@ export class MemberService {
       member.user = { id: userId } as UserEntity;
 
       const savedMember = await memberRepository.save(member);
+
+      const memberLog = await userRepository.findOneBy({ id: userId });
+      const userLog = await userRepository.findOneBy({ id: req.user.id });
+      const method= Object.keys(req.route.methods)[0];
+      
+      if(method && userLog && memberLog){
+        const Log = await HistoricService.createLog(method, req.originalUrl, "addMember", userLog, "( "+userLog.id+" ) "+userLog.email+" a ajouté le membre "+"( "+memberLog.id+" ) "+memberLog.email+" à la colocation ( "+colocation.id+" ) "+colocation.location, true);
+      }
+
       return savedMember;
     } catch (error) {
       return {
@@ -45,10 +60,11 @@ export class MemberService {
     }
   }
 
-  static async removeMember(colocationId: number, userId: number, ownerId: number) {
+  static async removeMember(colocationId: number, userId: number, ownerId: number, req : any) {
     try {
       const memberRepository = connectMySQLDB.getRepository(MemberEntity);
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
+      const userRepository = connectMySQLDB.getRepository(UserEntity);
 
       const colocation = await colocationRepository.findOne({
         where: { id: colocationId },
@@ -81,6 +97,13 @@ export class MemberService {
           errorCode: "MEMBER_NOT_FOUND",
           errMessage: "Membre introuvable dans cette colocation. Vérifiez par exemple si un user avec l'id '"+userId+"' existe bien"
         };
+      }
+      const memberLog = await userRepository.findOneBy({ id: userId });
+      const userLog = await userRepository.findOneBy({ id: req.user.id });
+      const method= Object.keys(req.route.methods)[0];
+      
+      if(method && userLog && memberLog){
+        const Log = await HistoricService.createLog(method, req.originalUrl, "addMember", userLog, "( "+userLog.id+" ) "+userLog.email+" a ajouté le membre "+"( "+memberLog.id+" ) "+memberLog.email+" à la colocation ( "+colocation.id+" ) "+colocation.location, true);
       }
 
       await memberRepository.remove(memberToRemove);

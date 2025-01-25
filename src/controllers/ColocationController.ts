@@ -29,7 +29,7 @@ export class ColocationController {
       const { location, area, numberOfRooms, ownerOrAgency } = req.body;
       const userId = (req as any).user.id;
 
-      const newColocation = await ColocationService.createColocation(userId, location, area, numberOfRooms, ownerOrAgency);
+      const newColocation = await ColocationService.createColocation(userId, location, area, numberOfRooms, ownerOrAgency, req);
       res.status(201).json(newColocation);
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
@@ -73,7 +73,7 @@ export class ColocationController {
   static async deleteColocation(req: Request, res: Response) {
     try {
       const colocationId = parseInt(req.params.id);
-      const result = await ColocationService.deleteColocation(colocationId);
+      const result = await ColocationService.deleteColocation(colocationId, req);
       res.status(200).json(result);
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {

@@ -7,7 +7,7 @@ export class MemberController {
         try {
           const { colocationId, userId } = req.body;
           const ownerId = (req as any).user.id;
-          const member = await MemberService.addMember(colocationId, userId, ownerId);
+          const member = await MemberService.addMember(colocationId, userId, ownerId, req);
           res.status(201).json(member);
         } catch (error) {
           if (error instanceof Error) {
@@ -23,7 +23,7 @@ export class MemberController {
         try {
           const { colocationId, userId } = req.body;
           const ownerId = (req as any).user.id;
-          const result = await MemberService.removeMember(colocationId, userId, ownerId);
+          const result = await MemberService.removeMember(colocationId, userId, ownerId, req);
           res.status(200).json(result);
         } catch (error) {
           if (error instanceof Error) {
