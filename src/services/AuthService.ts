@@ -1,19 +1,20 @@
 import { UserEntity } from "../databases/mysql/user.entity";
+import { HistoricEntity } from "../databases/mysql/historic.entity";
 import { Repository } from "typeorm";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { connectMySQLDB } from "../configs/databases/mysql.config";
+import { HistoricService } from "./HistoricService";
+
+const historicRepository = connectMySQLDB.getRepository(HistoricEntity);
+const historicService = new HistoricService(historicRepository);
 
 export class AuthService {
   constructor(private userRepository: Repository<UserEntity>) {}
 
   // Inscription d'un utilisateur
-  async register(data: {
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-    age: number;
-  }) {
+  async register(data: {firstname: string;lastname: string;email: string;password: string;age: number;}, req: any) {
+
     if (data.age < 18) {
       throw {
         statusCode: 422,
@@ -45,9 +46,26 @@ export class AuthService {
       password_hash,
     });
 
+    const method= Object.keys(req.route.methods)[0];
+    
+    if(method){
+      const Log = await HistoricService.createLog(method, req.originalUrl, "register", newUser, "( "+newUser.id+" ) "+newUser.email+" c'est crée un compte", true);
+    }
+
     await this.userRepository.save(newUser);
 
-    // Success : Object simple
+
+    /*
+    const log = await HistoricService.createLog(
+      'POST', // Exemple de méthode
+      '/register', // URL
+      'User registration', // Action
+      newUser, // Utilisateur
+      'User registered successfully', // Commentaire
+      true // Succès de l'action
+    );*/
+    
+
     return {
       data: {
         id: newUser.id,
@@ -60,8 +78,16 @@ export class AuthService {
   }
 
   // Connexion d'un utilisateur
-  async login(email: string, password: string) {
+  async login(email: string, password: string, req : any) {
     const user = await this.userRepository.findOneBy({ email });
+
+    const userLog = await this.userRepository.findOneBy({ id: req.user.id });
+    const method= Object.keys(req.route.methods)[0];
+    
+    if(method && userLog){
+      const Log = await HistoricService.createLog(method, req.originalUrl, "login", userLog, "( "+userLog.id+" ) "+userLog.email+" c'est connecté", true);
+    }
+
     if (!user) {
       throw {
         statusCode: 400,
@@ -128,8 +154,17 @@ export class AuthService {
   }
 
   // Récupérer les informations de l'utilisateur
-  async getMe(userId: number) {
+  async getMe(userId: number, req : any) {
+    
     const user = await this.userRepository.findOneBy({ id: userId });
+    
+    const userLog = await this.userRepository.findOneBy({ id: req.user.id });
+    const method= Object.keys(req.route.methods)[0];
+    
+    if(method && userLog){
+      const Log = await HistoricService.createLog(method, req.originalUrl, "register", userLog, "( "+userLog.id+" ) "+userLog.email+" a récupé l'utilisateur ( "+userLog.id+" ) "+userLog.email+"", true);
+    }
+
     if (!user) {
       throw {
         statusCode: 404,
@@ -155,8 +190,16 @@ export class AuthService {
   }
 
   // Suppression de l'utilisateur
-  async deleteUser(userId: number) {
+  async deleteUser(userId: number, req : any) {
     const user = await this.userRepository.findOneBy({ id: userId });
+
+    const userLog = await this.userRepository.findOneBy({ id: req.user.id });
+    const method= Object.keys(req.route.methods)[0];
+    
+    if(method && userLog){
+      const Log = await HistoricService.createLog(method, req.originalUrl, "deleteUser", userLog, "( "+userLog.id+" ) "+userLog.email+" a supprimé l'utilisateur ( "+userLog.id+" ) "+userLog.email+"", true);
+    }
+
     if (!user) {
       throw {
         statusCode: 404,

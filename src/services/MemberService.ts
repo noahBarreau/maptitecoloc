@@ -97,7 +97,8 @@ export class MemberService {
     }
   }
 
-  static async transferColocation(colocationId: number, newOwnerId: number, currentOwnerId: number) {
+  static async transferColocation(colocationId: number, newOwnerId: number, currentOwnerId: number, req : any) {
+
     try {
       const colocationRepository = connectMySQLDB.getRepository(ColocationEntity);
       const userRepository = connectMySQLDB.getRepository(UserEntity);

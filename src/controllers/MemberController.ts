@@ -38,7 +38,7 @@ export class MemberController {
         try {
           const { colocationId, newOwnerId } = req.body;
           const currentOwnerId = (req as any).user.id;
-          const result = await MemberService.transferColocation(colocationId, newOwnerId, currentOwnerId);
+          const result = await MemberService.transferColocation(colocationId, newOwnerId, currentOwnerId, req);
           res.status(200).json(result);
         } catch (error) {
           if (error instanceof Error) {

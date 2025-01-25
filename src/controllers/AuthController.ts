@@ -9,7 +9,7 @@ const authService = new AuthService(userRepository);
 export class AuthController {
   static async register(req: Request, res: Response) {
     try {
-      const user = await authService.register(req.body);
+      const user = await authService.register(req.body, req);
       res.status(201).json(user);
     } catch (error: unknown) {
       // Vérification si l'erreur a la structure attendue
@@ -36,7 +36,7 @@ export class AuthController {
   static async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
-      const tokens = await authService.login(email, password);
+      const tokens = await authService.login(email, password, req);
       res.status(200).json(tokens);
     } catch (error: unknown) {
       // Vérification de l'erreur
@@ -100,7 +100,7 @@ export class AuthController {
   static async getMe(req: Request, res: Response) {
     try {
       const userId = (req as any).user.id;
-      const user = await authService.getMe(userId);
+      const user = await authService.getMe(userId, req);
       res.status(200).json(user);
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
@@ -124,7 +124,7 @@ export class AuthController {
   static async deleteUser(req: Request, res: Response) {
     try {
       const userId = parseInt(req.params.id, 10);
-      const response = await authService.deleteUser(userId);
+      const response = await authService.deleteUser(userId, req);
       res.status(200).json(response);
     } catch (error: unknown) {
       if (error && typeof error === "object" && "statusCode" in error && "errorCode" in error) {
