@@ -16,8 +16,8 @@ export class HistoricEntity {
   @Column()
   action: string;
 
-  @ManyToOne(() => UserEntity, user => user.memberships)
-  user: UserEntity;
+  @Column()
+  user: string;
 
   @Column()
   comment: string;

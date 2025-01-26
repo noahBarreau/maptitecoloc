@@ -53,7 +53,7 @@ export class AuthController {
       res.status(400).json({
         statusCode: 400,
         errorCode: "ERR_INVALID_CREDENTIALS",
-        errMessage: "Email ou mot de passe incorrect.",
+        errMessage: "Email ou mot passe incorrect.",
       });
     }
   }
@@ -140,7 +140,7 @@ export class AuthController {
       res.status(400).json({
         statusCode: 400,
         errorCode: "ERR_USER_NOT_FOUND",
-        errMessage: "Utilisateur non trouvé.",
+        errMessage: "Utilisateurzqzdqzd non trouvé.",
       });
     }
   }

@@ -61,7 +61,7 @@ export class ColocationService {
       const method= Object.keys(req.route.methods)[0];
       
       if(method && userLog){
-        const Log = await HistoricService.createLog(method, req.originalUrl, "createColocation", userLog, "( "+userLog.id+" ) "+userLog.email+" a récupé la colocation ( "+newColocation.id+" ) "+newColocation.location, true);
+        const Log = await HistoricService.createLog(method, req.originalUrl, "createColocation", userLog.email, "( "+userLog.id+" ) "+userLog.email+" a crée la colocation ( "+newColocation.id+" ) "+newColocation.location, true);
       }
 
       const member = new MemberEntity();
@@ -139,7 +139,7 @@ export class ColocationService {
       const method= Object.keys(req.route.methods)[0];
       
       if(method && userLog){
-        const Log = await HistoricService.createLog(method, req.originalUrl, "deleteColocation", userLog, "( "+userLog.id+" ) "+userLog.email+" a supprimé la colocation ( "+colocation.id+" ) "+colocation.location, true);
+        const Log = await HistoricService.createLog(method, req.originalUrl, "deleteColocation", userLog.email, "( "+userLog.id+" ) "+userLog.email+" a supprimé la colocation ( "+colocation.id+" ) "+colocation.location, true);
       }
 
       colocation.ownerOrAgency = "inactive";

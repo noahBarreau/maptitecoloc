@@ -6,7 +6,7 @@ import { Repository } from "typeorm";
 export class HistoricService {
     constructor(private hsitoricRepository: Repository<HistoricEntity>) {}
     
-    static async createLog(method: string, url: string, action: string, user: UserEntity, comment: string, successful : boolean) {
+    static async createLog(method: string, url: string, action: string, user: string, comment: string, successful : boolean) {
       try {
         const historicRepository = connectMySQLDB.getRepository(HistoricEntity);
 

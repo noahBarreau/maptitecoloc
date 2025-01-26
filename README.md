@@ -5,6 +5,8 @@ Fait en Mysql via Xamp
 Toute la collection PostMan est disponible en import/export dans le fichier coloc.postman_collection.json
 -> a la racine du projet
 
+Si une erreur survient dans postMan / console de vscode, ne pas hésiter a couper l'api et a refaire npm run dev
+
 Dans la table historique :
   method -> type de la requete ( post, get, ... )
 

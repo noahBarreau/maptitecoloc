@@ -48,11 +48,12 @@ export class AuthService {
 
     const method= Object.keys(req.route.methods)[0];
     
-    if(method){
-      const Log = await HistoricService.createLog(method, req.originalUrl, "register", newUser, "( "+newUser.id+" ) "+newUser.email+" c'est crée un compte", true);
-    }
 
     await this.userRepository.save(newUser);
+
+    if(method){
+      const Log = await HistoricService.createLog(method, req.originalUrl, "register", newUser.email, "( "+newUser.id+" ) "+newUser.email+" c'est crée un compte", true);
+    }
 
 
     /*
@@ -81,13 +82,6 @@ export class AuthService {
   async login(email: string, password: string, req : any) {
     const user = await this.userRepository.findOneBy({ email });
 
-    const userLog = await this.userRepository.findOneBy({ id: req.user.id });
-    const method= Object.keys(req.route.methods)[0];
-    
-    if(method && userLog){
-      const Log = await HistoricService.createLog(method, req.originalUrl, "login", userLog, "( "+userLog.id+" ) "+userLog.email+" c'est connecté", true);
-    }
-
     if (!user) {
       throw {
         statusCode: 400,
@@ -100,6 +94,15 @@ export class AuthService {
         ]
       };
     }
+    
+    const userLog = await this.userRepository.findOneBy({ id: user.id });
+    const method= Object.keys(req.route.methods)[0];
+
+    if(method && userLog){
+      const Log = await HistoricService.createLog(method, req.originalUrl, "login", userLog.email, "( "+userLog.id+" ) "+userLog.email+" c'est connecté", true);
+    }
+
+
 
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     if (!isValidPassword) {
@@ -162,7 +165,7 @@ export class AuthService {
     const method= Object.keys(req.route.methods)[0];
     
     if(method && userLog){
-      const Log = await HistoricService.createLog(method, req.originalUrl, "register", userLog, "( "+userLog.id+" ) "+userLog.email+" a récupé l'utilisateur ( "+userLog.id+" ) "+userLog.email+"", true);
+      const Log = await HistoricService.createLog(method, req.originalUrl, "register", userLog.email, "( "+userLog.id+" ) "+userLog.email+" a récupé l'utilisateur ( "+userLog.id+" ) "+userLog.email+"", true);
     }
 
     if (!user) {
@@ -191,15 +194,9 @@ export class AuthService {
 
   // Suppression de l'utilisateur
   async deleteUser(userId: number, req : any) {
+    const userCollection = connectMySQLDB.getRepository(UserEntity);
     const user = await this.userRepository.findOneBy({ id: userId });
-
-    const userLog = await this.userRepository.findOneBy({ id: req.user.id });
-    const method= Object.keys(req.route.methods)[0];
     
-    if(method && userLog){
-      const Log = await HistoricService.createLog(method, req.originalUrl, "deleteUser", userLog, "( "+userLog.id+" ) "+userLog.email+" a supprimé l'utilisateur ( "+userLog.id+" ) "+userLog.email+"", true);
-    }
-
     if (!user) {
       throw {
         statusCode: 404,
@@ -212,6 +209,14 @@ export class AuthService {
       };
     }
 
+    const userLog = await userCollection.findOneBy({ id: req.user.id });
+    const method= Object.keys(req.route.methods)[0];
+    
+    if(method && userLog){
+      const Log = await HistoricService.createLog(method, req.originalUrl, "deleteUser", user.email, "( "+userLog.id+" ) "+userLog.email+" a supprimé l'utilisateur ( "+user.id+" ) "+user.email+"", true);
+    }
+
+    console.log(user);
     await this.userRepository.delete(userId);
 
     // Success : Object simple

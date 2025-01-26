@@ -31,8 +31,7 @@
 						"auth",
 						"register"
 					]
-				},
-				"description": "- Permet d'enregistrer un nouvelle utilisateur. L'email doit etre unique\n    \n- champ obligatoire : firstname, lastname, email, password\n    \n- Le mot de passe est hash\n    \n- Les infos sont a mettre dans le body"
+				}
 			},
 			"response": []
 		},
@@ -61,8 +60,7 @@
 						"auth",
 						"login"
 					]
-				},
-				"description": "- Permet de se connecter a un des compte de la BDD en utilisant l'email et le mot de passe ( les 2 champs sont obligatoire.\n    \n- Les infos sont a mettre dans le body.\n    \n- Si la connexion a réussi on récupere 2 token en échange ( token et refreshToken ) nécéssaire pour les autres actions"
+				}
 			},
 			"response": []
 		},
@@ -83,7 +81,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzM3MzcwNTk1LCJleHAiOjE3Mzc5NzUzOTV9.om8bUUuSE-0jri3MqRiNYYCUfFHE1eW0XkgNCV_qmYw\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -101,8 +99,7 @@
 						"auth",
 						"refresh"
 					]
-				},
-				"description": "- Permet de regénérer un token\n    \n- Nécéssite 'refreshToken' comme paramétre dans l'onglet autorization > Bearer Token"
+				}
 			},
 			"response": []
 		},
@@ -144,8 +141,7 @@
 						"auth",
 						"getMe"
 					]
-				},
-				"description": "- Permet de récuperer les donnéees de l'utilisateur correspond au token du paramétre\n    \n- Nécéssite 'token' comme paramétre dans l'onglet autorization > Bearer Token"
+				}
 			},
 			"response": []
 		},
@@ -174,7 +170,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/auth/users/:id",
+					"raw": "http://localhost:3000/auth/users/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -183,16 +179,9 @@
 					"path": [
 						"auth",
 						"users",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": ""
-						}
+						"1"
 					]
-				},
-				"description": "- Permet de supprimer un utilisateur en fonction de son id\n    \n- On remplace :id par l'id de l'utilisateur que l'on veut supprimer\n    \n- Nécéssite 'token' comme paramétre dans l'onglet autorization > Bearer Token, Attention si on souhaite supprimé l'utilisateur toto par exemple, on doit se connecté en tant que toto et prendre ce token"
+				}
 			},
 			"response": []
 		},
@@ -231,8 +220,7 @@
 						"colocations",
 						"create"
 					]
-				},
-				"description": "- Permet de créer une nouvelle colocation\n    \n- Nécessite le token du propriétaire de la location ( si toto est le propriétaire, on se connecte en tant que toto et on prend le token )\n    \n- Dans le body on renseigne les informations de la location, champ obligatoire : location (lieu), area, numberOfRoom"
+				}
 			},
 			"response": []
 		},
@@ -243,7 +231,14 @@
 			},
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzM3Mzg2MzQ4LCJleHAiOjE3MzczODk5NDh9.kqRDKK7bgPHAHnOobcf-sFKLbgQZQ6uMcrIBjU6hUFI",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
@@ -257,7 +252,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/colocations/user/:id",
+					"raw": "http://localhost:3000/colocations/user/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -266,16 +261,9 @@
 					"path": [
 						"colocations",
 						"user",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": ""
-						}
+						"1"
 					]
-				},
-				"description": "- Permet de récupérer toute les colocations liée l'utilisateur passé dans dans le token\n    \n- On remplace :id dans l'url par l'id de l'utilisateur pour lequel on veut récupérer toute ces colocations"
+				}
 			},
 			"response": []
 		},
@@ -286,7 +274,14 @@
 			},
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzM3Mzg0MzkxLCJleHAiOjE3MzczODc5OTF9.Yy6NSzVKxCxIJII3yNlZGY5P597HjcfGhnj30eI2nF8",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
@@ -300,7 +295,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/colocations/:id",
+					"raw": "http://localhost:3000/colocations/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -308,16 +303,9 @@
 					"port": "3000",
 					"path": [
 						"colocations",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": ""
-						}
+						"1"
 					]
-				},
-				"description": "- Permet de récupérer le détail d'une colocation\n    \n- On remplace :id dans l'url par l'id de la colocation que l'on veut récupérer"
+				}
 			},
 			"response": []
 		},
@@ -329,7 +317,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzM3NTU3NTM1LCJleHAiOjE3Mzc1NjExMzV9.2Jo5V2KATI8jsFsNfadqRn5w6xfjO01L7w2Za2ngn5g",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzM3Mzc2MTA1LCJleHAiOjE3MzczNzk3MDV9.H6gAh3kBZw9bYChN-NzHkxdVNXYSWtjugcwK4QCeCik",
 							"type": "string"
 						}
 					]
@@ -346,25 +334,18 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/colocations/delete/:1",
+					"raw": "http://localhost:3000/auth/users/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
-						"colocations",
-						"delete",
-						":1"
-					],
-					"variable": [
-						{
-							"key": "1",
-							"value": ""
-						}
+						"auth",
+						"users",
+						"1"
 					]
-				},
-				"description": "- Permet de \"supprimé\" une colocation ( en réalité on la déclare juste comme inactive dans la base de données )\n    \n- Nécessite le token du propriétaire de la colocation\n    \n- remplace :id par l'id de la colocation a supprimé"
+				}
 			},
 			"response": []
 		},
@@ -403,8 +384,7 @@
 						"members",
 						"add"
 					]
-				},
-				"description": "- Permet d'ajouter un membre a une colocation\n    \n- Nécessite le token du propriétaire, a renseigné dans l'onglet autorization > Bearer Token\n    \n- Dans le body on renseigne colocationId ( id de la colocation concerné ) et userId ( l'id du membre que l'on souhaite ajouter )"
+				}
 			},
 			"response": []
 		},
@@ -443,8 +423,7 @@
 						"members",
 						"remove"
 					]
-				},
-				"description": "- Permet de supprimer un membre d'une colocation\n    \n- Nécessite le token du propriétaire, a renseigné dans l'onglet autorization > Bearer Token\n    \n- Dans le body on renseigne colocationId ( id de la colocation concerné ) et userId ( l'id du membre que l'on souhaite supprimer )"
+				}
 			},
 			"response": []
 		},
@@ -483,8 +462,7 @@
 						"members",
 						"transfer"
 					]
-				},
-				"description": "- Permet de transférer le status de propriétaire a un membre / un autre utilisateur\n    \n- Nécessite le token du propriétaire, a renseigné dans l'onglet autorization > Bearer Token\n    \n- Dans le body on renseigne colocationId ( id de la colocation concerné ) et userId ( l'id du membre que l'on souhaite supprimer )"
+				}
 			},
 			"response": []
 		},
@@ -495,13 +473,20 @@
 			},
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzM3Mzg2MzQ4LCJleHAiOjE3MzczODk5NDh9.kqRDKK7bgPHAHnOobcf-sFKLbgQZQ6uMcrIBjU6hUFI",
+							"type": "string"
+						}
+					]
 				},
 				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"colocationId\": 1\r\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -509,7 +494,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/members/profile/:id",
+					"raw": "http://localhost:3000/members/profile/2",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -518,16 +503,9 @@
 					"path": [
 						"members",
 						"profile",
-						":id"
-					],
-					"variable": [
-						{
-							"key": "id",
-							"value": ""
-						}
+						"2"
 					]
-				},
-				"description": "- Permet de récuperer le profil d'un membre\n    \n- Dans le body on renseigne colocationId ( id de la colocation concerné ) et userId ( l'id du membre que l'on souhaite supprimer )\n    \n- On remplace :id dans l'url par l'id de l'utilisateur pour lequel on veut récupérer le profile\n    \n- Dans le body, on doit obligatoirement mettre 'colocationId' qui correspond a l'id de la colocation sur laquelle on souhaite filtrer les membres"
+				}
 			},
 			"response": []
 		}

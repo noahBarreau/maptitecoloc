@@ -47,7 +47,7 @@ export class MemberService {
       const method= Object.keys(req.route.methods)[0];
       
       if(method && userLog && memberLog){
-        const Log = await HistoricService.createLog(method, req.originalUrl, "addMember", userLog, "( "+userLog.id+" ) "+userLog.email+" a ajouté le membre "+"( "+memberLog.id+" ) "+memberLog.email+" à la colocation ( "+colocation.id+" ) "+colocation.location, true);
+        const Log = await HistoricService.createLog(method, req.originalUrl, "addMember", userLog.email, "( "+userLog.id+" ) "+userLog.email+" a ajouté le membre "+"( "+memberLog.id+" ) "+memberLog.email+" à la colocation ( "+colocation.id+" ) "+colocation.location, true);
       }
 
       return savedMember;
@@ -103,7 +103,7 @@ export class MemberService {
       const method= Object.keys(req.route.methods)[0];
       
       if(method && userLog && memberLog){
-        const Log = await HistoricService.createLog(method, req.originalUrl, "addMember", userLog, "( "+userLog.id+" ) "+userLog.email+" a ajouté le membre "+"( "+memberLog.id+" ) "+memberLog.email+" à la colocation ( "+colocation.id+" ) "+colocation.location, true);
+        const Log = await HistoricService.createLog(method, req.originalUrl, "removeMember", userLog.email, "( "+userLog.id+" ) "+userLog.email+" a supprimé le membre "+"( "+memberLog.id+" ) "+memberLog.email+" à la colocation ( "+colocation.id+" ) "+colocation.location, true);
       }
 
       await memberRepository.remove(memberToRemove);
